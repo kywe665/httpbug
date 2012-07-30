@@ -1,0 +1,41 @@
+{
+  "author": "Kyle Weller <kywe665@gmail.com> (kywe665.com)",
+  "name": "httpbug",
+  "description": "Poll resources with HTTP GET",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kywe665/httpbug.git"
+  },
+  "bin": {
+    "httpbug-server": "bin/server.js"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "prepublish": "node deploy"
+  },
+  "dependencies": {
+    "steve": "~0.5.10",
+    "connect": "2.3.6",
+    "http-json": "1.x",
+    "connect_router": "1.x",
+    "connect-cookieless-session": "0.6.x",
+    "nowww": "1.x",
+    "connect-pathname": "0.6.x",
+    "connect-xcors": "0.5.x",
+    "express-chromeframe": "0.2.x",
+    "socket.io": "~0.9.6",
+    "connect_router": "~1.8.6",
+    "pretty-data": "~0.30.3",
+    "hljs": "~6.2.3",
+    "mkdirp": "~0.3.2"
+  },
+  "main": "server/server",
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}

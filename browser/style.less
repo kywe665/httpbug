@@ -1,0 +1,487 @@
+@darkBackground: #1D1D1D;
+@strongYellow: #FFC925;
+@lightBackground: #8B907F;
+@lightGray: #D1D1D1;
+body{
+	font-family: "Play";
+	background-color: #23241F;
+	background-image: url('images/dark_mosaic.png');
+}
+.centered{
+	margin-left: auto;
+	margin-right: auto;
+}
+.background{
+	width: 960px;
+	.centered;
+}
+.rounded-bottom (@radius) {
+	border-radius: 0px 0px @radius @radius;
+}
+.rounded-top (@radius) {
+	border-radius: @radius @radius 0px 0px;
+}
+.disabled{
+  background-color: #555;
+  box-shadow: inset 0 30px 35px -18px #222;
+  &:hover{
+    cursor: default;
+    box-shadow: inset 0 32px 35px -18px #333;
+    margin-left: 0px;
+  }
+}
+.header{
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4c4c4c),
+   color-stop(0%,#4f4f4f), color-stop(20%,#3a3a3a), color-stop(50%,#2c2c2c), 
+   color-stop(52%,#1d1d1d), color-stop(100%,#262626), color-stop(100%,#2d2d2d), 
+   color-stop(100%,#1d1d1d));
+  border-radius: 10px;
+  height: 27px;
+  padding: 6px 15px;
+  box-shadow: inset 0px 0px 1px 1px #111;
+  margin-bottom: 26px;
+  margin-top: 12px;
+  .css-title{
+    float: left;
+    color: @strongYellow;
+    text-shadow: 0px 1px 0px #444, -1px -1px 0px #111;
+    font-size: 24px;
+  }
+  img{
+    float: left;
+    margin: 9px 20px 0px 15px;
+    height: 35px;
+  }
+  .css-logo{
+    position: relative;
+    top: -14px;
+    left: -10px;
+  }
+}
+
+.css-tab-menu{
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0px;
+  -webkit-padding-start: 0px;
+  position: relative;
+  float: right;
+  left: 15px;
+  top: -5px;
+  box-shadow: -1px 0px 6px 0px #111;
+	li{
+		float: left;
+    list-style-type: none;
+    position: relative;
+    box-shadow: inset -6px 0px 6px -5px #111, inset 6px 3px 2px -5px #555;
+    background-color:transparent;
+    border-radius: 0px;
+    padding: 0px;
+    margin-left: 0px;
+		a{
+      padding: 9px 38px;
+      display: block;
+      text-shadow: 0px 1px 0px #444, 0px -1px 0px #111;
+      color: white;
+			text-decoration: none;
+		}
+    &.selected{
+      background: -webkit-radial-gradient(center, ellipse cover, #4c4c4c 0%,#262626 0%,#141414 100%,#2d2d2d 100%,#1d1d1d 100%);
+      a{
+        color: #FFC925;
+      }
+    }
+    &:last-child{
+      border-radius: 0px 10px 10px 0px;
+    }
+    &:hover:not(.selected){
+      cursor: pointer;
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4c4c4c), color-stop(0%,#424242), color-stop(20%,#2d2d2d), color-stop(50%,#2b2b2b), color-stop(51%,#191919), color-stop(82%,#1e1e1e), color-stop(100%,#333333), color-stop(100%,#262626), color-stop(100%,#2d2d2d), color-stop(100%,#191919));
+    }
+	}
+}
+.css-container{
+  background: rgba(72, 73, 65, 0.8);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(130, 132, 118, 0.8)), color-stop(100%,rgba(61, 63, 55, 0.8)));
+  border: 6px solid #222;
+  border-radius: 15px;
+  position: relative;
+  top: -18px;
+	min-height: 475px;
+	overflow: hidden;
+}
+.css-close-tab{
+  border-radius: 15px;
+  height: 15px;
+  width: 15px;
+  display: inline-block;
+  content: 'x';
+  position: relative;
+  right: 5px;
+  text-align: center;
+  line-height: 12px;
+  color: #888;
+  background: rgba(60, 60, 60, 0.2);
+  &:hover{
+    background: #555;
+    cursor: pointer;
+    color: #AAA;
+  }
+}
+.css-hidden{
+  display: none;
+}
+.css-tab-bar{
+  background: #222;
+  max-height: 29px;
+  overflow: hidden;
+  li{
+    background: #333;
+    padding: 5px 0px;
+    float: left;
+    list-style-type: none;
+    border-radius: 8px 8px 0px 0px;
+    margin-right:4px;
+    &.selected{
+      background: #64665B;
+    }
+    a{
+      color: #ccc;
+      text-decoration: none;
+      padding: 4px 10px;
+    }
+  }
+}
+.css-ui-tab-view{
+  padding: 20px;
+  p{
+    color: #ccc;
+    -webkit-margin-before: 0px;
+    font-size: 15px;
+    -webkit-margin-after: 4px;
+  }
+  .css-portNum{
+    background-color: #D1D1D1;
+    margin-right: 15px;
+    margin-left: 15px;
+    width: 60px;
+    text-align: right;
+  }
+  .css-log{
+    &:before{
+      content: 'Start Log'
+    }
+    &.activeLog:before{
+      content: 'Stop Log';
+    }
+  }
+  .css-enter-port{
+    color: #CCC;
+    float: left;
+  }
+  .css-log-options{
+    float: right;
+    margin-top: -4px;
+    p, input{
+      float: right;
+      -webkit-margin-after: 4px;
+    }
+    input{
+      margin: 4px 10px;
+    }
+  }
+  &.css-active{
+    .css-openSocket{
+      .disabled
+    }
+    .css-connection-status{
+      background: -webkit-radial-gradient(center, ellipse cover, green 23%, #64665B 100%);
+    }
+  }
+  &.css-inactive{
+    .css-log{
+      .disabled
+    }
+    .css-closeSocket{
+      .disabled
+    }
+    .css-connection-status{
+      background: -webkit-radial-gradient(center, ellipse cover, #AA3636 23%, #64665B 100%);
+    }
+  }
+}
+.css-poll-form{
+  span{
+    color: #CCC;
+    font-size: 15px;
+    &.css-poll-protocol{
+      color: #333;
+    }
+  }
+  input{
+    background-color: #D1D1D1;
+    margin-right: 10px;
+    &.css-poll-url{
+      width: 130px;
+    }
+    &.css-poll-interval{
+      width: 40px;
+    }
+  }
+}
+.css-default a{
+  font-weight: bold;
+  padding: 0px 15px!important;
+  text-shadow: 0px 0px 4px black;
+  font-size: 22px;
+  line-height: 18px;
+}
+.css-button{
+	padding: 4px 12px 6px 12px;
+	border-radius: 5px;
+	box-shadow: inset 0 30px 35px -18px @strongYellow;
+	text-shadow: 0 1px 3px #000000;
+	text-decoration: none;
+	font-weight: bold;
+	color: white;
+	font-family: Arial;
+	font-size: 13px;
+	background-color: @darkBackground;
+	-webkit-transition-property: box-shadow,text-shadow,margin-left,margin-right;
+	-webkit-transition-duration: .3s,.2s,.1s,.1s;
+  &:hover{
+    text-shadow: 0 1px 3px #000000;
+	  box-shadow: inset 0 32px 35px -18px #F5C753;
+	  margin-left: 3px;
+	  text-decoration: none;
+	  cursor:pointer;
+  }
+}
+.css-stream{
+  background: rgba(32, 32, 32, 0.6);
+  color: #CCC;
+  width: 884px;
+	height: 340px;
+	padding: 10px;
+  clear: left;
+	border: 2px groove #666;
+  overflow-y: scroll;
+  margin: 15px 0px;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  .css-streamTime{
+		color:lightBlue;
+		font-size:12px;
+    margin-top: 10px;
+	}
+  .css-streamError{
+		color: lightCoral;
+	}
+  .css-streamNewConnection{
+    color: lightGray;
+    box-shadow: 0px 4px 12px -7px green;
+  }
+  .css-streamCloseConnection{
+    color: lightGray;
+    box-shadow: 0px 4px 12px -7px red; 
+  }
+  pre{
+    -webkit-transition-property: background, border, padding;
+    -webkit-transition-duration: .1s, .05s, .05s;
+    margin: 0;
+    cursor: pointer;
+    .string { color: lightGreen; }
+    .number { color: lightYellow; }
+    .boolean { color: lightSkyBlue; }
+    .null { color: plum; }
+    .key { color: lightSalmon; }
+    &.css-hl-block{
+      background: #333;
+      border: 2px groove #FFC925;
+      padding: 8px;
+      cursor: pointer;
+    }
+  }
+}
+
+.css-listen-form{
+  float: left;
+  width: 200px;
+}
+.css-connection-info{
+  float: left;
+  padding-top: 4px;
+  font-size: 15px;
+  color: #111;
+  position: relative;
+  top: -10px;
+  div{
+    float: left;
+    position: relative;
+    top: 2px;
+  }
+  .css-connection-status{
+    border-radius: 120px;
+    padding: 1px 10px;
+    box-shadow: inset 0px 0px 10px 4px #64665B;
+    -webkit-transition: background .3s linear;
+  }
+  .css-connection-count{
+    padding: 0px 4px;
+  }
+}
+.css-bottom{
+  float: left;
+  width:173px;
+  p{
+    float: left;
+    position: relative;
+  }
+  input{
+    float: right;
+  }
+  &.css-right{
+    float:right;
+  }
+}
+.css-top{
+  &.right{
+    float:right;
+    margin-top: -5px;
+    margin-right: 10px;
+    p{
+      float: left;
+      -webkit-margin-after: 0;
+    }
+    input{
+      margin: 2px 15px 0px 10px;
+    }
+  }
+}
+
+@font-face {
+  font-family: 'Play';
+  font-style: normal;
+  font-weight: normal;
+  /*
+  src: local('Play'), url('http://themes.googleusercontent.com/static/fonts/play/v2/PeTTkHQKj5rUPVxkIGAoaw.ttf') format('truetype');
+  */
+  src: local('Play'), url('fonts/play.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Play';
+  font-style: normal;
+  font-weight: bold;
+  /*
+  src: local('Play-Bold'), url('http://themes.googleusercontent.com/static/fonts/play/v2/j7wx-rRiDuE-JcaZ1ilpKg.ttf') format('truetype');
+  */
+  src: local('Play-Bold'), url('fonts/play-bold.ttf') format('truetype');
+}
+
+pre code {
+  display: block; padding: 0.5em;
+  color: #DCDCDC;
+}
+
+pre .keyword,
+pre .tag,
+pre .django .tag,
+pre .django .keyword,
+pre .css .class,
+pre .css .id,
+pre .lisp .title {
+  color: #E3CEAB;
+}
+
+pre .django .template_tag,
+pre .django .variable,
+pre .django .filter .argument {
+  color: #DCDCDC;
+}
+
+pre .number,
+pre .date {
+  color: #8CD0D3;
+}
+
+pre .dos .envvar,
+pre .dos .stream,
+pre .variable,
+pre .apache .sqbracket {
+  color: #EFDCBC;
+}
+
+pre .dos .flow,
+pre .diff .change,
+pre .python .exception,
+pre .python .built_in,
+pre .literal,
+pre .tex .special {
+  color: #EFEFAF;
+}
+
+pre .diff .chunk,
+pre .ruby .subst {
+  color: #8F8F8F;
+}
+
+pre .dos .keyword,
+pre .python .decorator,
+pre .class .title,
+pre .haskell .label,
+pre .function .title,
+pre .ini .title,
+pre .diff .header,
+pre .ruby .class .parent,
+pre .apache .tag,
+pre .nginx .built_in,
+pre .tex .command,
+pre .input_number {
+    color: #efef8f;
+}
+
+pre .dos .winutils,
+pre .ruby .symbol,
+pre .ruby .symbol .string,
+pre .ruby .symbol .keyword,
+pre .ruby .symbol .keymethods,
+pre .ruby .string,
+pre .ruby .instancevar {
+  color: #DCA3A3;
+}
+
+pre .diff .deletion,
+pre .string,
+pre .tag .value,
+pre .preprocessor,
+pre .built_in,
+pre .sql .aggregate,
+pre .javadoc,
+pre .smalltalk .class,
+pre .smalltalk .localvars,
+pre .smalltalk .array,
+pre .css .rules .value,
+pre .attr_selector,
+pre .pseudo,
+pre .apache .cbracket,
+pre .tex .formula {
+  color: #CC9393;
+}
+
+pre .shebang,
+pre .diff .addition,
+pre .comment,
+pre .java .annotation,
+pre .template_comment,
+pre .pi,
+pre .doctype {
+  color: #7F9F7F;
+}
+
+pre .coffeescript .javascript,
+pre .xml .css,
+pre .xml .javascript,
+pre .xml .vbscript,
+pre .tex .formula {
+  opacity: 0.5;
+}
+
