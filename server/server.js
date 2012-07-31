@@ -31,6 +31,7 @@
         socket.on('stopPoll', poll.stopPoll);
         socket.on('disconnect', function () { 
           console.log('Browser disconnected');
+          poll.stopPoll('all');
         });
         /*socket.on('message', function (data) {
         });
