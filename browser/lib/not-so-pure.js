@@ -6,27 +6,20 @@
     , $ = ender
     ;
 
-  function injectTabView(port, protocol, newClass){
+  function injectTabView(port, protocol, newClass, url, interval){
     var template = 
-      '<div data-name="'+port+'" class="js-ui-tab-view css-ui-tab-view js-all css-inactive">'+
-        '<div class="css-log-options">'+
-          '<input type="checkbox" class="js-include-headers">'+
-          '<p>Save headers</p>'+
-        '</div>'+
+      '<div data-name="'+port+'" class="js-ui-tab-view css-ui-tab-view js-all css-active">'+
         '<div class="css-connection-info">'+
-          '<a data-protocol="http" data-port="'+port+'" class="css-button css-openSocket js-reopen js-'+port+'">Open Connection</a>'+
           '<div class="css-connection-status js-http-connection-status off">Connection Status</div>'+
         '</div>'+
         '<div class="css-top right">'+
-          '<p>Save each packet seperately</p>'+
-          '<input type="checkbox" checked="true" class="js-http-multifile">'+
           '<a data-protocol="'+protocol+'" class="css-button js-log css-log '+newClass+'"></a>'+
         '</div>'+
         '<div class="js-http-stream js-all-stream css-stream">'+
           '<span class="js-allstream-error"></span>'+
         '</div>'+
         '<div class="css-left css-bottom">'+
-          '<a data-protocol="'+protocol+'" class="css-button css-closeSocket js-closeSocket '+newClass+'">Close Connection</a>'+
+          '<a class="css-button css-toggle-poll js-toggle-poll '+newClass+'" data-url="'+url+'" data-interval="'+interval+'"></a>'+
         '</div>'+
         '<div class="css-center css-bottom">'+
           '<a data-protocol="'+protocol+'" class="css-button js-clear '+newClass+'">Clear</a>'+

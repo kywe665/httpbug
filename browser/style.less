@@ -168,7 +168,7 @@ body{
   }
   .css-log{
     &:before{
-      content: 'Start Log'
+      content: 'Start Log';
     }
     &.activeLog:before{
       content: 'Stop Log';
@@ -191,18 +191,23 @@ body{
   }
   &.css-active{
     .css-openSocket{
-      .disabled
+      .disabled;
     }
     .css-connection-status{
       background: -webkit-radial-gradient(center, ellipse cover, green 23%, #64665B 100%);
     }
+    .css-toggle-poll:before{
+      content: 'Stop Poll';
+    }
   }
   &.css-inactive{
     .css-log{
-      .disabled
+      .disabled;
     }
-    .css-closeSocket{
-      .disabled
+    .css-toggle-poll{
+      &:before{
+        content: 'Restart Poll';
+      }
     }
     .css-connection-status{
       background: -webkit-radial-gradient(center, ellipse cover, #AA3636 23%, #64665B 100%);

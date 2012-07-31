@@ -33,17 +33,14 @@
     'a': 'portNum'
   };
   /*tabContainerDir = {
-    'div.js-ui-tab-view@data-name': 'port-num',
-    '.js-ui-tab-view .css-listen-form .js-port-num@class': 'class-protocol',
-    //'.js-ui-tab-view .css-listen-form span.js-port-num@data-protocol': 'protocol',
-    //'.js-ui-tab-view .css-listen-form .js-port-num': 'port-num',
-    //'a.js-log@class': 'class-protocol',
-    'a.js-log@data-protocol': 'protocol',
+    'a.js-log@class': 'class-protocol',
+    //'a.js-log@data-protocol': 'protocol',
     //'div.js-closeSocket@class': 'class-protocol',
-    'div.js-closeSocket@data-protocol': 'protocol',
-    'div.js-clear@class': 'class-protocol',
-    'div.js-clear@data-protocol': 'protocol',
-    'div.js-scroll@class': 'class-protocol',
+    //'div.js-closeSocket@data-protocol': 'protocol',
+    //'div.js-clear@class': 'class-protocol',
+    //'div.js-clear@data-protocol': 'protocol',
+    'div.js-scroll@class+': 'class-protocol',
+    //'div.js-ui-tab-view@data-name': 'port-num',
     'div.js-scroll@data-protocol': 'protocol'
   };*/
 
@@ -51,7 +48,7 @@
   messageTemplate = pure('.js-message-template').compile(messageDir);
   codeTemplate = pure('.js-code-template').compile(codeDir);
   tabTemplate = pure('.js-tab-template').compile(tabDir);
-  //tabContainerTemplate = pure('.js-tab-container-template').compile(tabContainerDir);
+  tabContainerTemplate = pure('.js-tab-container-template').compile(tabContainerDir);
 
   function injectMessage(protocol, data, port) {
     if(port){

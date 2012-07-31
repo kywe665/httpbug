@@ -8,14 +8,14 @@
     , pollFlag = {}
     ;
 
-  function init(path, interval, id, first) {
+  function init(path, interval, id, first, reopen) {
     if(path.substring(0,7) !== 'http://'){
       path = 'http://'+path;
     }
-    makeRequest(url.parse(path, true), interval, id, first);
+    makeRequest(url.parse(path, true), interval, id, first, reopen, path);
   }
 
-  function makeRequest(options, interval, id, first) {
+  function makeRequest(options, interval, id, first, reopen, path) {
     console.log('polling', options.host, interval);
     var timeSent = Date.now()
       , req
@@ -23,8 +23,10 @@
     req = http.request(options, function(res) {
       var responseMsg = '';
       if(first) {
-        browserSocket.emit('pollTab', id);
         pollFlag[id] = true;
+        if(!reopen){
+          browserSocket.emit('pollTab', id, path, interval);
+        }
       }
       res.setEncoding('utf8');
       res.on('data', function (chunk) {
@@ -47,9 +49,7 @@
       }
       browserSocket.emit('pollData', 'default', null, null, null, e);
       browserSocket.emit('pollData', id, null, null, null, e);
-      if(e.code === 'ECONNRESET'){
-        timeoutMap[id] = setTimeout(pollAgain, interval, options, interval, id);
-      }
+      timeoutMap[id] = setTimeout(pollAgain, interval, options, interval, id);
     });
 
     req.on('socket', function(socket) {

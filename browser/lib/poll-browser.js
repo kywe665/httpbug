@@ -87,19 +87,6 @@
     }
     return data;
   }
-
-  function getId() {
-    var count = 0;
-    $('.js-tab-bar li').forEach(function(ele){
-      $(ele).attr('class').split(' ').forEach(function(newClass) {
-        if(newClass.indexOf('poll') !== -1){
-          count++;
-        }
-      });
-    });
-    return 'poll'+(count+1);
-  }
   
   module.exports.formatMsg = formatMsg;
-  module.exports.getId = getId;
 }());
