@@ -51,21 +51,11 @@
   tabContainerTemplate = pure('.js-tab-container-template').compile(tabContainerDir);
 
   function injectMessage(protocol, data, port) {
-    if(port){
-      $('.js-ui-tab-view[data-name="'+port+'"] .js-'+protocol+'-stream').append(addTime() + messageTemplate(data));
-    }
-    else{
-      $('.js-'+protocol+'-stream').append(addTime() + messageTemplate(data));
-    }
+    $('.js-ui-tab-view[data-name="'+protocol+'"] .js-ui-tab-view[data-name="'+port+'"] .js-'+protocol+'-stream').append(addTime() + messageTemplate(data));
   }
   
   function injectCode(protocol, data, port) {
-    if(port){
-      $('.js-ui-tab-view[data-name="'+port+'"] .js-'+protocol+'-stream').append(addTime() + codeTemplate(data));
-    }
-    else{
-      $('.js-'+protocol+'-stream').append(addTime() + codeTemplate(data));
-    }
+    $('.js-ui-tab-view[data-name="'+protocol+'"] .js-ui-tab-view[data-name="'+port+'"] .js-'+protocol+'-stream').append(addTime() + codeTemplate(data));
   }
   
   function addTime () {

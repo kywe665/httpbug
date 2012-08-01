@@ -8,16 +8,16 @@
     , pd = require('pretty-data').pd
     ;
 
-  function formatMsg(id, respStatus, headers, body, error){
+  function formatMsg(id, protocol, respStatus, headers, body, error){
     var msg = 'STATUS: ' + respStatus + '\r\n'
       , data = processBody(body)
       ;
     if(error){
-      pure.injectMessage('get', {
+      pure.injectMessage(protocol, {
         "message": prettyJson(error),
         "class": "css-streamError"
       }, 'default');
-      pure.injectMessage('get', {
+      pure.injectMessage(protocol, {
         "message": prettyJson(error),
         "class": "css-streamError"
       }, id);
@@ -27,11 +27,11 @@
       if(data.code){
         msg += 'BODY: \r\n' + data.code + '\r\n';
       }
-      pure.injectCode('get', {'code': msg, 'xml': data.xml}, id);
+      pure.injectCode(protocol, {'code': msg, 'xml': data.xml}, id);
     }
-    visual.scrollLock({'protocol': 'get'}, id);
-    visual.scrollLock({'protocol': 'get'}, 'default');
-    visual.highlightMsg({"protocol": "get"});
+    visual.scrollLock({'protocol': protocol}, id);
+    visual.scrollLock({'protocol': protocol}, 'default');
+    visual.highlightMsg({"protocol": protocol});
   }
 
   function alertLatency(id, avg) {

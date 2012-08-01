@@ -31,8 +31,10 @@
     $(this).toggleClass('css-hl-block');
   });
   $('.container').on('.js-ui-tab-view .js-close-tab', 'click', function(){
-   var port = $(this).parent().find('a').html();
-    tabs.closeTab(port, this);
+    var port = $(this).parent().find('a').html()
+      , protocol = $(this).parent().attr('data-protocol')
+      ;
+    tabs.closeTab(port, this, protocol);
     socket.emit('stopPoll', port);
 	});
   $('.container').on('.js-scroll', 'change', function(){
@@ -44,19 +46,20 @@
     $(this).closest('.js-ui-tab-view').find('.js-'+$(this).attr('data-protocol')+'-stream').html('');
   });
   $('.container').on('.js-poll-button', 'click', function(){
-    var url = $('.js-poll-url').val()
-      , interval = parseInt($('.js-poll-interval').val(), 10) || 1000
+    var url = $(this).closest('.js-ui-tab-view').find('.js-poll-url').val()
+      , interval = parseInt($(this).closest('.js-ui-tab-view').find('.js-poll-interval').val(), 10) || 1000
       , id = 'poll' + ( parseInt($(this).attr('data-count'), 10)+1 )
+      , protocol = $(this).attr('data-protocol')
       ;
     if(!url){
       visual.injectMessage({
-        "protocol": "get",
+        "protocol": protocol,
         "body": "Please enter a url to poll.",
         "cssClass": "css-streamError"
       }, 'default');
       return;
     }
-    socket.emit('poll', url, interval, id, true);
+    socket.emit('poll', url, interval, id, protocol, true);
   });
   $('.container').on('.js-ui-tab-view:not(.css-active) .js-poll-form input', 'keypress', function(e){
     if(e.keyCode === 13){
@@ -67,14 +70,15 @@
     var id = $(this).closest('.js-ui-tab-view').attr('data-name')
       , url = $(this).attr('data-url')
       , interval = parseInt($(this).attr('data-interval'), 10)
+      , protocol = $(this).attr('data-protocol')
       ;
     if($(this).closest('.js-ui-tab-view').hasClass('css-active')) {
       socket.emit('stopPoll', id);
-      visual.stateChange('get', id, false);
+      visual.stateChange(protocol, id, false);
     }
     else{
-      socket.emit('poll', url, interval, id, true, true);
-      visual.stateChange('get', id, true);
+      socket.emit('poll', url, interval, id, protocol, true, true);
+      visual.stateChange(protocol, id, true);
     }
   });
   /*$('.container').on('.js-ui-tab-view:not(.css-inactive) .js-log', 'click', function(){
@@ -94,14 +98,14 @@
     socket = io.connect('http://'+window.location.hostname+':34541');
     socket.on('connect', function () {
       socket.send('hi');
-      socket.on('pollData', function (id, respStatus, headers, body, error) {
-        poll.formatMsg(id, respStatus, headers, body, error);
+      socket.on('pollData', function (id, protocol, respStatus, headers, body, error) {
+        poll.formatMsg(id, protocol, respStatus, headers, body, error);
       });
-      socket.on('pollTab', function(id, url, interval) {
-        var current = parseInt($('.js-poll-button').attr('data-count'), 10);
-        $('.js-poll-button').attr('data-count', current+1);
-        tabs.makeNew('get', id, url, interval);
-        visual.stateChange('get', id, true);
+      socket.on('pollTab', function(id, url, interval, protocol) {
+        var current = parseInt($('.js-ui-tab-view[data-name="'+protocol+'"] .js-poll-button').attr('data-count'), 10);
+        $('.js-ui-tab-view[data-name="'+protocol+'"] .js-poll-button').attr('data-count', current+1);
+        tabs.makeNew(protocol, id, url, interval);
+        visual.stateChange(protocol, id, true);
       });
       socket.on('latency', poll.alertLatency);
       socket.on('latencyStable', poll.latencyStable);

@@ -10,15 +10,15 @@
     , avgLatency = {}
     ;
 
-  function init(path, interval, id, first, reopen) {
+  function init(path, interval, id, protocol, first, reopen) {
     if(path.substring(0,7) !== 'http://'){
       path = 'http://'+path;
     }
-    makeRequest(url.parse(path, true), interval, id, first, reopen, path);
+    makeRequest(url.parse(path, true), interval, id, protocol, first, reopen, path);
   }
 
-  function makeRequest(options, interval, id, first, reopen, path) {
-    console.log('polling', options.host, interval);
+  function makeRequest(options, interval, id, protocol, first, reopen, path) {
+    console.log('polling', options.host, interval, protocol);
     var timeSent = Date.now()
       , reqId = timeSent
       , req
@@ -34,7 +34,7 @@
       if(first) {
         pollFlag[id] = true;
         if(!reopen){
-          browserSocket.emit('pollTab', id, path, interval);
+          browserSocket.emit('pollTab', id, path, interval, protocol);
         }
       }
       res.setEncoding('utf8');
@@ -43,8 +43,8 @@
       });
       res.on('end', function () {
         var timeout = calculateTimeout(interval, timeSent, id);
-        browserSocket.emit('pollData', id, res.statusCode, res.headers, responseMsg, null);
-        timeoutMap[id] = setTimeout(pollAgain, timeout, options, interval, id, reqId);
+        browserSocket.emit('pollData', id, protocol, res.statusCode, res.headers, responseMsg, null);
+        timeoutMap[id] = setTimeout(pollAgain, timeout, options, interval, id, protocol, reqId);
         delete activeRequest[id][reqId];
       });
     });
@@ -54,12 +54,12 @@
       delete activeRequest[id][reqId];
       if(first){
         var err = 'Check your url and try again: ';
-        browserSocket.emit('pollData', 'default', null, null, null, err);
+        browserSocket.emit('pollData', 'default', protocol, null, null, null, err);
         return;
       }
-      browserSocket.emit('pollData', 'default', null, null, null, e);
-      browserSocket.emit('pollData', id, null, null, null, e);
-      timeoutMap[id] = setTimeout(pollAgain, interval, options, interval, id, reqId);
+      browserSocket.emit('pollData', 'default', protocol, null, null, null, e);
+      browserSocket.emit('pollData', id, protocol, null, null, null, e);
+      timeoutMap[id] = setTimeout(pollAgain, interval, options, interval, id, protocol, reqId);
     });
 
     req.on('socket', function(socket) {
@@ -67,17 +67,17 @@
         delete activeRequest[id][reqId];
         console.log('ERROR: ');
         console.log(error);
-        browserSocket.emit('pollData', 'default', null, null, null, error);
-        browserSocket.emit('pollData', id, null, null, null, error);
+        browserSocket.emit('pollData', 'default', protocol, null, null, null, error);
+        browserSocket.emit('pollData', id, protocol, null, null, null, error);
       });
     });
 
     req.end();
   }
   
-  function pollAgain(options, interval, id, reqId) {
+  function pollAgain(options, interval, id, protocol, reqId) {
     if(pollFlag[id]){
-      makeRequest(options, interval, id);
+      makeRequest(options, interval, id, protocol);
     }
     else{
       clearTimeout(timeoutMap[id]);

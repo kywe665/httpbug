@@ -22,18 +22,18 @@
   
   function changeToCurrent(portNum, protocol){
     window.location.hash = '/'+protocol+'/'+portNum;
-    $('.js-default').removeClass('css-hidden');
-    $('.js-tab-container').css('margin-bottom', '20px');
+    $('.js-ui-tab-view[data-name="'+protocol+'"] .js-default').removeClass('css-hidden');
+    $('.js-ui-tab-view[data-name="'+protocol+'"] .js-tab-container').css('margin-bottom', '20px');
   }
   
-  function closeTab(port, that) {
-    $('.js-log.activeLog.js-'+port).trigger('click');
+  function closeTab(port, that, protocol) {
+    $('.js-ui-tab-view[data-name="'+protocol+'"] .js-log.activeLog.js-'+port).trigger('click');
     $(that).closest('.js-tab-template').remove();
     $('.js-ui-tab-view[data-name="'+port+'"]').remove();
-    changeToCurrent('default', 'get');
-    if($('.js-ui-tab-view[data-name="get"] .js-tab-bar').children().length <= 1){
-      $('.js-ui-tab-view[data-name="get"] .js-tab-bar .js-default').addClass('css-hidden');
-      $('.js-ui-tab-view[data-name="get"] .js-tab-container').css('margin-bottom', '0px');
+    changeToCurrent('default', protocol);
+    if($('.js-ui-tab-view[data-name="'+protocol+'"] .js-tab-bar').children().length <= 1){
+      $('.js-ui-tab-view[data-name="'+protocol+'"] .js-tab-bar .js-default').addClass('css-hidden');
+      $('.js-ui-tab-view[data-name="'+protocol+'"] .js-tab-container').css('margin-bottom', '0px');
     }
   }
 

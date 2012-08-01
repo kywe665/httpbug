@@ -12,6 +12,8 @@ html(lang='en')
         ul.css-tab-menu
           li.js-ui-tab.js-get(data-protocol='get')
             a(href='/get/default') GET
+          li.js-ui-tab.js-post(data-protocol='post')
+            a(href='/post/default') POST
       .css-container.container
         .js-ui-tab-view.js-all.css-inactive(data-name='get')
           .css-tab-bar.js-tab-bar
@@ -28,6 +30,22 @@ html(lang='en')
             .js-get-stream.js-all-stream.css-stream
               span.js-allstream-error
             a.css-button.js-clear.js-get(data-protocol='get') Clear
+          .css-tab-container.js-tab-container
+        .js-ui-tab-view.js-all.css-inactive(data-name='post')
+          .css-tab-bar.js-tab-bar
+            li.js-ui-tab.js-default.css-default.css-hidden(data-protocol="post")
+              a(href='/post/default')  + 
+          .js-ui-tab-view.css-ui-tab-view(data-name='default')
+            .css-poll-form
+              span.css-poll-url Url to poll: 
+              span.css-poll-protocol http://
+              input.js-poll-url.css-poll-url(type='text')(data-protocol='post')(value="POST")
+              span.css-poll-interval Interval (milliseconds): 
+              input.js-poll-interval.css-poll-interval(type='tel')(data-protocol='post')
+              a.css-button.css-poll-button.js-poll-button.js-post(data-protocol='post')(data-count=0) Poll
+            .js-post-stream.js-all-stream.css-stream
+              span.js-allstream-error
+            a.css-button.js-clear.js-post(data-protocol='post') Clear
           .css-tab-container.js-tab-container
 
       span.js-all-templates.css-hidden
