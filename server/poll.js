@@ -7,6 +7,7 @@
     , timeoutMap = {}
     , pollFlag = {}
     , activeRequest = {}
+    , avgLatency = {}
     ;
 
   function init(path, interval, id, first, reopen) {
@@ -24,9 +25,10 @@
       ;
     if(first) {
       activeRequest[id] = {};
+      avgLatency[id] = [0, 0, 0, 0, 0];
     }
     activeRequest[id][reqId] = true;
-    calculateLatency(interval, timeSent, id, reqId);
+    currentLatency(interval, timeSent, id, reqId);
     req = http.request(options, function(res) {
       var responseMsg = '';
       if(first) {
@@ -40,8 +42,7 @@
         responseMsg += chunk;
       });
       res.on('end', function () {
-        var timeout = calculateTimeout(interval, timeSent);
-        console.log('timeout:', timeout);
+        var timeout = calculateTimeout(interval, timeSent, id);
         browserSocket.emit('pollData', id, res.statusCode, res.headers, responseMsg, null);
         timeoutMap[id] = setTimeout(pollAgain, timeout, options, interval, id, reqId);
         delete activeRequest[id][reqId];
@@ -84,11 +85,11 @@
     }
   }
   
-  function calculateTimeout(interval, timeSent) {
+  function calculateTimeout(interval, timeSent, id) {
     var timeFinished = Date.now()
       , timeElapsed = timeFinished - timeSent
       ;
-    //calculateLatency(interval, timeSent);
+    manageLatency(id, timeElapsed, interval);
     console.log('time elapsed:', timeElapsed);
     if(timeElapsed < interval){
       return (interval - timeElapsed);
@@ -96,20 +97,45 @@
     return 0;
   }
   
-  function calculateLatency(interval, timeSent, id, reqId) {
-    var timeElapsed = Date.now() - timeSent;
-    console.log('current latency', timeElapsed);
-    if(timeElapsed > interval*2){
-      alertLatency();
-      delete activeRequest[id][reqId];
-    }
-    if(activeRequest[id][reqId]){
-      setTimeout(calculateLatency, 5, interval, timeSent, id, reqId);
+  function manageLatency(id, timeElapsed, interval) {
+    avgLatency[id].shift();
+    avgLatency[id].push(timeElapsed);
+    var avg = getAvgLatency(id);
+    console.log('avg', avg);
+    if(avg < interval) {
+      browserSocket.emit('latencyStable', id);
     }
   }
   
-  function alertLatency() {
-    console.log('ALERT SLOW NETWORK');
+  function currentLatency(interval, timeSent, id, reqId) {
+    var timeElapsed = Date.now() - timeSent;
+    //console.log('current latency', timeElapsed);
+    if(timeElapsed > interval) {
+      alertLatency(id, interval);
+    }
+    if(timeElapsed > interval*4) {
+      alertLatency(id, interval, true);
+      delete activeRequest[id][reqId];
+    }
+    if(activeRequest[id][reqId]){
+      setTimeout(currentLatency, 5, interval, timeSent, id, reqId);
+    }
+  }
+  
+  function alertLatency(id, interval, force) {
+    var avg = getAvgLatency(id);
+    if(force || avg > interval) {
+      browserSocket.emit('latency', id, avg);
+    }
+  }
+  
+  function getAvgLatency(id) {
+    var avg = 0;
+    avgLatency[id].forEach(function(val) {
+      avg += val;
+    });
+    avg = avg/avgLatency[id].length;
+    return avg;
   }
 
   function stopPoll(id) {

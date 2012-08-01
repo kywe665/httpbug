@@ -34,6 +34,14 @@
     visual.highlightMsg({"protocol": "http"});
   }
 
+  function alertLatency(id, avg) {
+    $('.js-ui-tab-view[data-name="'+id+'"] .js-connection-status').addClass('css-latency');
+  }
+
+  function latencyStable(id) {
+    $('.js-ui-tab-view[data-name="'+id+'"] .js-connection-status').removeClass('css-latency');
+  }
+
   function prettyJson (json) {
     var json_pp = json;
     //TODO add try catch in case it's not JSON
@@ -89,4 +97,6 @@
   }
   
   module.exports.formatMsg = formatMsg;
+  module.exports.alertLatency = alertLatency;
+  module.exports.latencyStable = latencyStable;
 }());

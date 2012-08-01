@@ -103,6 +103,8 @@
         tabs.makeNew('http', id, url, interval);
         visual.stateChange('http', id, true);
       });
+      socket.on('latency', poll.alertLatency);
+      socket.on('latencyStable', poll.latencyStable);
       socket.on('disconnect', function () { 
         console.log('Browser-Disconnected socket');
         options.cssClass = 'css-streamError';
