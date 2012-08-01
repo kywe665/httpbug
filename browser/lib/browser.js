@@ -23,7 +23,7 @@
     options.protocol = 'all';
     options.body = '';
     openSocket(options);
-    uiTabs.create('body', '.js-ui-tab a', '.js-ui-tab', '.js-ui-tab-view', 'http/default');
+    uiTabs.create('body', '.js-ui-tab a', '.js-ui-tab', '.js-ui-tab-view', 'get/default');
   });
   
   //EVENT LISTENERS ALL
@@ -50,7 +50,7 @@
       ;
     if(!url){
       visual.injectMessage({
-        "protocol": "http",
+        "protocol": "get",
         "body": "Please enter a url to poll.",
         "cssClass": "css-streamError"
       }, 'default');
@@ -70,11 +70,11 @@
       ;
     if($(this).closest('.js-ui-tab-view').hasClass('css-active')) {
       socket.emit('stopPoll', id);
-      visual.stateChange('http', id, false);
+      visual.stateChange('get', id, false);
     }
     else{
       socket.emit('poll', url, interval, id, true, true);
-      visual.stateChange('http', id, true);
+      visual.stateChange('get', id, true);
     }
   });
   /*$('.container').on('.js-ui-tab-view:not(.css-inactive) .js-log', 'click', function(){
@@ -100,8 +100,8 @@
       socket.on('pollTab', function(id, url, interval) {
         var current = parseInt($('.js-poll-button').attr('data-count'), 10);
         $('.js-poll-button').attr('data-count', current+1);
-        tabs.makeNew('http', id, url, interval);
-        visual.stateChange('http', id, true);
+        tabs.makeNew('get', id, url, interval);
+        visual.stateChange('get', id, true);
       });
       socket.on('latency', poll.alertLatency);
       socket.on('latencyStable', poll.latencyStable);

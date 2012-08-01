@@ -13,11 +13,11 @@
       , data = processBody(body)
       ;
     if(error){
-      pure.injectMessage('http', {
+      pure.injectMessage('get', {
         "message": prettyJson(error),
         "class": "css-streamError"
       }, 'default');
-      pure.injectMessage('http', {
+      pure.injectMessage('get', {
         "message": prettyJson(error),
         "class": "css-streamError"
       }, id);
@@ -27,11 +27,11 @@
       if(data.code){
         msg += 'BODY: \r\n' + data.code + '\r\n';
       }
-      pure.injectCode('http', {'code': msg, 'xml': data.xml}, id);
+      pure.injectCode('get', {'code': msg, 'xml': data.xml}, id);
     }
-    visual.scrollLock({'protocol': 'http'}, id);
-    visual.scrollLock({'protocol': 'http'}, 'default');
-    visual.highlightMsg({"protocol": "http"});
+    visual.scrollLock({'protocol': 'get'}, id);
+    visual.scrollLock({'protocol': 'get'}, 'default');
+    visual.highlightMsg({"protocol": "get"});
   }
 
   function alertLatency(id, avg) {

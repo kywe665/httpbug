@@ -16,7 +16,7 @@
         '<div class="css-top right">'+
           '<a data-protocol="'+protocol+'" class="css-button js-log css-log '+newClass+'"></a>'+
         '</div>'+
-        '<div class="js-http-stream js-all-stream css-stream">'+
+        '<div class="js-get-stream js-all-stream css-stream">'+
           '<span class="js-allstream-error"></span>'+
         '</div>'+
         '<div class="css-left css-bottom">'+

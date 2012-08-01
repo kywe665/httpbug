@@ -30,10 +30,10 @@
     $('.js-log.activeLog.js-'+port).trigger('click');
     $(that).closest('.js-tab-template').remove();
     $('.js-ui-tab-view[data-name="'+port+'"]').remove();
-    changeToCurrent('default', 'http');
-    if($('.js-ui-tab-view[data-name="http"] .js-tab-bar').children().length <= 1){
-      $('.js-ui-tab-view[data-name="http"] .js-tab-bar .js-default').addClass('css-hidden');
-      $('.js-ui-tab-view[data-name="http"] .js-tab-container').css('margin-bottom', '0px');
+    changeToCurrent('default', 'get');
+    if($('.js-ui-tab-view[data-name="get"] .js-tab-bar').children().length <= 1){
+      $('.js-ui-tab-view[data-name="get"] .js-tab-bar .js-default').addClass('css-hidden');
+      $('.js-ui-tab-view[data-name="get"] .js-tab-container').css('margin-bottom', '0px');
     }
   }
 
