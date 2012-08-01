@@ -103,7 +103,7 @@
     var avg = getAvgLatency(id);
     console.log('avg', avg);
     if(avg < interval) {
-      browserSocket.emit('latencyStable', id);
+      browserSocket.emit('latencyStable', id, avg);
     }
   }
   

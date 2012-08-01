@@ -11,6 +11,7 @@
       '<div data-name="'+port+'" class="js-ui-tab-view css-ui-tab-view js-all css-active">'+
         '<div class="css-connection-info">'+
           '<div class="css-connection-status js-connection-status">Connection Status</div>'+
+          '<span class="css-avg-latency js-avg-latency"></span>'+
         '</div>'+
         '<div class="css-top right">'+
           '<a data-protocol="'+protocol+'" class="css-button js-log css-log '+newClass+'"></a>'+

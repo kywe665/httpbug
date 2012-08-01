@@ -36,10 +36,12 @@
 
   function alertLatency(id, avg) {
     $('.js-ui-tab-view[data-name="'+id+'"] .js-connection-status').addClass('css-latency');
+    $('.js-ui-tab-view[data-name="'+id+'"] .js-avg-latency').html(' Latency: '+avg+'ms');
   }
 
-  function latencyStable(id) {
+  function latencyStable(id, avg) {
     $('.js-ui-tab-view[data-name="'+id+'"] .js-connection-status').removeClass('css-latency');
+    $('.js-ui-tab-view[data-name="'+id+'"] .js-avg-latency').html(' Latency: '+avg+'ms');
   }
 
   function prettyJson (json) {
