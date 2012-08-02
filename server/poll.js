@@ -8,13 +8,34 @@
     , pollFlag = {}
     , activeRequest = {}
     , avgLatency = {}
+    , postData = {}
+    , tabs = ['get', 'post', 'custom']
     ;
+  tabs.forEach(function(protocol){
+    timeoutMap[protocol] = {};
+    pollFlag[protocol] = {};
+    activeRequest[protocol] = {};
+    avgLatency[protocol] = {};
+  });
 
-  function init(path, interval, id, protocol, first, reopen) {
+  function initGet(path, interval, id, reopen) {
     if(path.substring(0,7) !== 'http://'){
       path = 'http://'+path;
     }
-    makeRequest(url.parse(path, true), interval, id, protocol, first, reopen, path);
+    makeRequest(url.parse(path, true), interval, id, 'get', true, reopen, path);
+  }
+
+  function initPost(path, interval, id, reopen, data) {
+    var options;
+    if(path.substring(0,7) !== 'http://'){
+      path = 'http://'+path;
+    }
+    if(!reopen){
+      postData[id] = data;
+    }
+    options = url.parse(path, true);
+    options.method = 'POST';
+    makeRequest(options, interval, id, 'post', true, reopen, path);  
   }
 
   function makeRequest(options, interval, id, protocol, first, reopen, path) {
@@ -24,15 +45,15 @@
       , req
       ;
     if(first) {
-      activeRequest[id] = {};
-      avgLatency[id] = [0, 0, 0, 0, 0];
+      activeRequest[protocol][id] = {};
+      avgLatency[protocol][id] = [interval, interval, interval, interval, interval];
     }
-    activeRequest[id][reqId] = true;
-    currentLatency(interval, timeSent, id, reqId);
+    activeRequest[protocol][id][reqId] = true;
+    currentLatency(interval, timeSent, id, reqId, protocol);
     req = http.request(options, function(res) {
       var responseMsg = '';
       if(first) {
-        pollFlag[id] = true;
+        pollFlag[protocol][id] = true;
         if(!reopen){
           browserSocket.emit('pollTab', id, path, interval, protocol);
         }
@@ -42,16 +63,16 @@
         responseMsg += chunk;
       });
       res.on('end', function () {
-        var timeout = calculateTimeout(interval, timeSent, id);
+        var timeout = calculateTimeout(interval, timeSent, id, protocol);
         browserSocket.emit('pollData', id, protocol, res.statusCode, res.headers, responseMsg, null);
-        timeoutMap[id] = setTimeout(pollAgain, timeout, options, interval, id, protocol, reqId);
-        delete activeRequest[id][reqId];
+        timeoutMap[protocol][id] = setTimeout(pollAgain, timeout, options, interval, id, protocol, reqId);
+        delete activeRequest[protocol][id][reqId];
       });
     });
 
     req.on('error', function(e) {
       console.log('problem with request: ', e);
-      delete activeRequest[id][reqId];
+      delete activeRequest[protocol][id][reqId];
       if(first){
         var err = 'Check your url and try again: ';
         browserSocket.emit('pollData', 'default', protocol, null, null, null, err);
@@ -59,12 +80,12 @@
       }
       browserSocket.emit('pollData', 'default', protocol, null, null, null, e);
       browserSocket.emit('pollData', id, protocol, null, null, null, e);
-      timeoutMap[id] = setTimeout(pollAgain, interval, options, interval, id, protocol, reqId);
+      timeoutMap[protocol][id] = setTimeout(pollAgain, interval, options, interval, id, protocol, reqId);
     });
 
     req.on('socket', function(socket) {
       socket.on('error', function(error) {
-        delete activeRequest[id][reqId];
+        delete activeRequest[protocol][id][reqId];
         console.log('ERROR: ');
         console.log(error);
         browserSocket.emit('pollData', 'default', protocol, null, null, null, error);
@@ -72,24 +93,28 @@
       });
     });
 
+    if(protocol === 'post') {
+      req.write(postData[id]);
+    }
+
     req.end();
   }
   
   function pollAgain(options, interval, id, protocol, reqId) {
-    if(pollFlag[id]){
+    if(pollFlag[protocol][id]){
       makeRequest(options, interval, id, protocol);
     }
     else{
-      clearTimeout(timeoutMap[id]);
-      delete activeRequest[id][reqId];
+      clearTimeout(timeoutMap[protocol][id]);
+      delete activeRequest[protocol][id][reqId];
     }
   }
   
-  function calculateTimeout(interval, timeSent, id) {
+  function calculateTimeout(interval, timeSent, id, protocol) {
     var timeFinished = Date.now()
       , timeElapsed = timeFinished - timeSent
       ;
-    manageLatency(id, timeElapsed, interval);
+    manageLatency(id, timeElapsed, interval, protocol);
     console.log('time elapsed:', timeElapsed);
     if(timeElapsed < interval){
       return (interval - timeElapsed);
@@ -97,69 +122,79 @@
     return 0;
   }
   
-  function manageLatency(id, timeElapsed, interval) {
-    avgLatency[id].shift();
-    avgLatency[id].push(timeElapsed);
-    var avg = getAvgLatency(id);
+  function manageLatency(id, timeElapsed, interval, protocol) {
+    avgLatency[protocol][id].shift();
+    avgLatency[protocol][id].push(timeElapsed);
+    var avg = getAvgLatency(id, protocol);
     console.log('avg', avg);
     if(avg < interval) {
-      browserSocket.emit('latencyStable', id, avg);
+      browserSocket.emit('latencyStable', id, ' Latency: '+avg+'ms');
     }
   }
   
-  function currentLatency(interval, timeSent, id, reqId) {
+  function currentLatency(interval, timeSent, id, reqId, protocol) {
     var timeElapsed = Date.now() - timeSent;
     //console.log('current latency', timeElapsed);
     if(timeElapsed > interval) {
-      alertLatency(id, interval);
+      alertLatency(id, protocol, interval);
     }
-    if(timeElapsed > interval*4) {
-      alertLatency(id, interval, true);
-      delete activeRequest[id][reqId];
+    if(timeElapsed > interval*3 && timeElapsed < interval*10) {
+      alertLatency(id, protocol, interval, true);
+      delete activeRequest[protocol][id][reqId];
     }
-    if(activeRequest[id][reqId]){
-      setTimeout(currentLatency, 5, interval, timeSent, id, reqId);
+    if(timeElapsed >= interval*10) {
+      alertLatency(id, protocol, interval, false, true);
+      delete activeRequest[protocol][id][reqId];
+    }
+    if(activeRequest[protocol][id][reqId]){
+      setTimeout(currentLatency, 5, interval, timeSent, id, reqId, protocol);
     }
   }
   
-  function alertLatency(id, interval, force) {
-    var avg = getAvgLatency(id);
+  function alertLatency(id, protocol, interval, force, lost) {
+    var avg = getAvgLatency(id, protocol);
     if(force || avg > interval) {
-      browserSocket.emit('latency', id, avg);
+      browserSocket.emit('latency', id, ' Latency: '+avg+'ms');
+    }
+    if(lost){
+      browserSocket.emit('latency', id, 'Not responding...');
     }
   }
   
-  function getAvgLatency(id) {
+  function getAvgLatency(id, protocol) {
     var avg = 0;
-    avgLatency[id].forEach(function(val) {
+    avgLatency[protocol][id].forEach(function(val) {
       avg += val;
     });
-    avg = avg/avgLatency[id].length;
+    avg = avg/avgLatency[protocol][id].length;
     return avg;
   }
 
-  function stopPoll(id) {
+  function stopPoll(id, protocol) {
     if(id === 'all') {
-      Object.keys(timeoutMap).forEach(function(key){
-        console.log('stopped polling ' + key);
-        clearTimeout(timeoutMap[key]);
-        pollFlag[key] = false;
+      Object.keys(timeoutMap).forEach(function(tab) {
+        Object.keys(timeoutMap[tab]).forEach(function(key) {
+          console.log('stopped polling ' + key);
+          clearTimeout(timeoutMap[tab][key]);
+          pollFlag[tab][key] = false;
+        });
       });
       return;
     }
     console.log('stopped polling ' + id);
-    clearTimeout(timeoutMap[id]);
-    Object.keys(activeRequest[id]).forEach(function(reqIds){
-      delete activeRequest[id][reqIds];
+    clearTimeout(timeoutMap[protocol][id]);
+    Object.keys(activeRequest[protocol][id]).forEach(function(reqIds){
+      delete activeRequest[protocol][id][reqIds];
     });
-    pollFlag[id] = false;
+    pollFlag[protocol][id] = false;
   }
 
   function assignSocket (socket) {
     browserSocket = socket;
   }
 
-  module.exports.init = init;
+  module.exports.initGet = initGet;
+  module.exports.initPost = initPost;
   module.exports.assignSocket = assignSocket;
   module.exports.stopPoll = stopPoll;
 }());

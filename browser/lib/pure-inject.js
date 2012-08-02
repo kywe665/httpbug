@@ -51,6 +51,9 @@
   tabContainerTemplate = pure('.js-tab-container-template').compile(tabContainerDir);
 
   function injectMessage(protocol, data, port) {
+    if(protocol === 'all') {
+      $('.js-'+protocol+'-stream').append(addTime() + messageTemplate(data));
+    }
     $('.js-ui-tab-view[data-name="'+protocol+'"] .js-ui-tab-view[data-name="'+port+'"] .js-'+protocol+'-stream').append(addTime() + messageTemplate(data));
   }
   

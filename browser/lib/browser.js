@@ -35,7 +35,7 @@
       , protocol = $(this).parent().attr('data-protocol')
       ;
     tabs.closeTab(port, this, protocol);
-    socket.emit('stopPoll', port);
+    socket.emit('stopPoll', port, protocol);
 	});
   $('.container').on('.js-scroll', 'change', function(){
     visual.scrollLock({
@@ -46,24 +46,11 @@
     $(this).closest('.js-ui-tab-view').find('.js-'+$(this).attr('data-protocol')+'-stream').html('');
   });
   $('.container').on('.js-poll-button', 'click', function(){
-    var url = $(this).closest('.js-ui-tab-view').find('.js-poll-url').val()
-      , interval = parseInt($(this).closest('.js-ui-tab-view').find('.js-poll-interval').val(), 10) || 1000
-      , id = 'poll' + ( parseInt($(this).attr('data-count'), 10)+1 )
-      , protocol = $(this).attr('data-protocol')
-      ;
-    if(!url){
-      visual.injectMessage({
-        "protocol": protocol,
-        "body": "Please enter a url to poll.",
-        "cssClass": "css-streamError"
-      }, 'default');
-      return;
-    }
-    socket.emit('poll', url, interval, id, protocol, true);
+    startPoll(this);
   });
-  $('.container').on('.js-ui-tab-view:not(.css-active) .js-poll-form input', 'keypress', function(e){
+  $('.container').on('.js-poll-form input', 'keypress', function(e){
     if(e.keyCode === 13){
-      $('.js-poll-button').trigger('click');
+      $(this).closest('.js-ui-tab-view').find('.js-poll-button').trigger('click');
     }
   });
   $('.container').on('.js-toggle-poll', 'click', function(){
@@ -73,11 +60,11 @@
       , protocol = $(this).attr('data-protocol')
       ;
     if($(this).closest('.js-ui-tab-view').hasClass('css-active')) {
-      socket.emit('stopPoll', id);
+      socket.emit('stopPoll', id, protocol);
       visual.stateChange(protocol, id, false);
     }
     else{
-      socket.emit('poll', url, interval, id, protocol, true, true);
+      socket.emit('poll'+protocol, url, interval, id, true);
       visual.stateChange(protocol, id, true);
     }
   });
@@ -92,6 +79,39 @@
       $(this).toggleClass('activeLog');
     }
   });*/
+
+  function startPoll(that){
+    var url = $(that).closest('.js-ui-tab-view').find('.js-poll-url').val()
+      , interval = parseInt($(that).closest('.js-ui-tab-view').find('.js-poll-interval').val(), 10) || 1000
+      , id = 'poll' + ( parseInt($(that).attr('data-count'), 10)+1 )
+      , protocol = $(that).attr('data-protocol')
+      , data = $(that).closest('.js-ui-tab-view').find('.js-poll-data').val()
+      ;
+    if(!url){
+      visual.injectMessage({
+        "protocol": protocol,
+        "body": "Please enter a url to poll.",
+        "cssClass": "css-streamError"
+      }, 'default');
+      return;
+    }
+    if(protocol === 'post'){
+      try{
+        JSON.parse(data);
+      }
+      catch(e){
+        visual.injectMessage({
+          "protocol": protocol,
+          "body": "Invalid JSON.",
+          "cssClass": "css-streamError"
+        }, 'default');
+        console.log(data);
+        window.open('http://jsonlint.com/?json='+data, '_blank');
+        return;
+      }
+    }
+    socket.emit('poll'+protocol, url, interval, id, false, data);
+  }
  
 //SOCKET COMMUNICATION WITH SERVER 
   function openSocket(options) {
@@ -110,11 +130,11 @@
       socket.on('latency', poll.alertLatency);
       socket.on('latencyStable', poll.latencyStable);
       socket.on('disconnect', function () { 
-        console.log('Browser-Disconnected socket');
+        console.log('Server Down');
         options.cssClass = 'css-streamError';
-        options.body = 'NetBug Server Down';
+        options.body = 'HTTPBug Server Down';
         options.protocol = 'all';
-        visual.injectMessage(options);
+        visual.injectMessage(options, 'default');
         options.active = false;
         $('.js-log.activeLog').trigger('click');
         visual.stateChange('all');

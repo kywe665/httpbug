@@ -29,7 +29,7 @@
   function closeTab(port, that, protocol) {
     $('.js-ui-tab-view[data-name="'+protocol+'"] .js-log.activeLog.js-'+port).trigger('click');
     $(that).closest('.js-tab-template').remove();
-    $('.js-ui-tab-view[data-name="'+port+'"]').remove();
+    $('.js-ui-tab-view[data-name="'+protocol+'"] .js-ui-tab-view[data-name="'+port+'"]').remove();
     changeToCurrent('default', protocol);
     if($('.js-ui-tab-view[data-name="'+protocol+'"] .js-tab-bar').children().length <= 1){
       $('.js-ui-tab-view[data-name="'+protocol+'"] .js-tab-bar .js-default').addClass('css-hidden');

@@ -20,7 +20,7 @@
           '<span class="js-allstream-error"></span>'+
         '</div>'+
         '<div class="css-left css-bottom">'+
-          '<a class="css-button css-toggle-poll js-toggle-poll data-protocol="'+protocol+'" data-url="'+url+'" data-interval="'+interval+'"></a>'+
+          '<a class="css-button css-toggle-poll js-toggle-poll" data-protocol="'+protocol+'" data-url="'+url+'" data-interval="'+interval+'"></a>'+
         '</div>'+
         '<div class="css-center css-bottom">'+
           '<a data-protocol="'+protocol+'" class="css-button js-clear '+newClass+'">Clear</a>'+

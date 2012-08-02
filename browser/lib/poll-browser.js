@@ -34,14 +34,14 @@
     visual.highlightMsg({"protocol": protocol});
   }
 
-  function alertLatency(id, avg) {
+  function alertLatency(id, msg) {
     $('.js-ui-tab-view[data-name="'+id+'"] .js-connection-status').addClass('css-latency');
-    $('.js-ui-tab-view[data-name="'+id+'"] .js-avg-latency').html(' Latency: '+avg+'ms');
+    $('.js-ui-tab-view[data-name="'+id+'"] .js-avg-latency').html(msg);
   }
 
-  function latencyStable(id, avg) {
+  function latencyStable(id, msg) {
     $('.js-ui-tab-view[data-name="'+id+'"] .js-connection-status').removeClass('css-latency');
-    $('.js-ui-tab-view[data-name="'+id+'"] .js-avg-latency').html(' Latency: '+avg+'ms');
+    $('.js-ui-tab-view[data-name="'+id+'"] .js-avg-latency').html(msg);
   }
 
   function prettyJson (json) {

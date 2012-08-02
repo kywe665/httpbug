@@ -27,7 +27,8 @@
         browserSocket = socket;
         console.log('Connected to browser');
         poll.assignSocket(socket);
-        socket.on('poll', poll.init);
+        socket.on('pollget', poll.initGet);
+        socket.on('pollpost', poll.initPost);
         socket.on('stopPoll', poll.stopPoll);
         socket.on('disconnect', function () { 
           console.log('Browser disconnected');

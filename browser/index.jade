@@ -20,7 +20,7 @@ html(lang='en')
             li.js-ui-tab.js-default.css-default.css-hidden(data-protocol="get")
               a(href='/get/default')  + 
           .js-ui-tab-view.css-ui-tab-view(data-name='default')
-            .css-poll-form
+            .js-poll-form.css-poll-form
               span.css-poll-url Url to poll: 
               span.css-poll-protocol http://
               input.js-poll-url.css-poll-url(type='text')(data-protocol='get')(value="http://remote.spotterrf.com:7772/spotter.kml")
@@ -36,13 +36,16 @@ html(lang='en')
             li.js-ui-tab.js-default.css-default.css-hidden(data-protocol="post")
               a(href='/post/default')  + 
           .js-ui-tab-view.css-ui-tab-view(data-name='default')
-            .css-poll-form
+            .js-poll-form.css-poll-form
               span.css-poll-url Url to poll: 
               span.css-poll-protocol http://
-              input.js-poll-url.css-poll-url(type='text')(data-protocol='post')(value="POST")
+              input.js-poll-url.css-poll-url(type='text')(data-protocol='post')(value="localhost:2468")
               span.css-poll-interval Interval (milliseconds): 
               input.js-poll-interval.css-poll-interval(type='tel')(data-protocol='post')
               a.css-button.css-poll-button.js-poll-button.js-post(data-protocol='post')(data-count=0) Poll
+              .css-poll-data
+                span JSON to post: 
+                textarea.js-poll-data
             .js-post-stream.js-all-stream.css-stream
               span.js-allstream-error
             a.css-button.js-clear.js-post(data-protocol='post') Clear
