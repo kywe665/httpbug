@@ -2,7 +2,7 @@
   "author": "Kyle Weller <kywe665@gmail.com> (kywe665.com)",
   "name": "httpbug",
   "description": "Poll resources with HTTP GET",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/kywe665/httpbug.git"

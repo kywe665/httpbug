@@ -39,7 +39,7 @@
   }
 
   function makeRequest(options, interval, id, protocol, first, reopen, path) {
-    console.log('polling', options.host, interval, protocol);
+    //console.log('polling', options.host, interval, protocol);
     var timeSent = Date.now()
       , reqId = timeSent
       , req
@@ -88,6 +88,7 @@
         delete activeRequest[protocol][id][reqId];
         console.log('ERROR: ');
         console.log(error);
+        browserSocket.emit('latency', id, 'Not responding...');
         browserSocket.emit('pollData', 'default', protocol, null, null, null, error);
         browserSocket.emit('pollData', id, protocol, null, null, null, error);
       });
@@ -115,7 +116,7 @@
       , timeElapsed = timeFinished - timeSent
       ;
     manageLatency(id, timeElapsed, interval, protocol);
-    console.log('time elapsed:', timeElapsed);
+    //console.log('time elapsed:', timeElapsed);
     if(timeElapsed < interval){
       return (interval - timeElapsed);
     }
@@ -126,7 +127,7 @@
     avgLatency[protocol][id].shift();
     avgLatency[protocol][id].push(timeElapsed);
     var avg = getAvgLatency(id, protocol);
-    console.log('avg', avg);
+    //console.log('avg', avg);
     if(avg < interval) {
       browserSocket.emit('latencyStable', id, ' Latency: '+avg+'ms');
     }
@@ -140,7 +141,6 @@
     }
     if(timeElapsed > interval*3 && timeElapsed < interval*10) {
       alertLatency(id, protocol, interval, true);
-      delete activeRequest[protocol][id][reqId];
     }
     if(timeElapsed >= interval*10) {
       alertLatency(id, protocol, interval, false, true);
@@ -153,7 +153,7 @@
   
   function alertLatency(id, protocol, interval, force, lost) {
     var avg = getAvgLatency(id, protocol);
-    if(force || avg > interval) {
+    if((force || avg > interval) && !lost) {
       browserSocket.emit('latency', id, ' Latency: '+avg+'ms');
     }
     if(lost){
