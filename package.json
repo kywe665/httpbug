@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "steve": "~0.5.10",
-    "connect": "2.3.6",
+    "connect": "3.7.0",
     "http-json": "1.x",
     "connect_router": "1.x",
     "connect-cookieless-session": "0.6.x",
